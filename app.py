@@ -1,4 +1,5 @@
 import os
+import logging
 from datetime import datetime
 from urllib.parse import urlparse, urlunparse
 
@@ -9,7 +10,11 @@ from werkzeug.utils import secure_filename
 import cloudinary
 import cloudinary.uploader
 
+# Set up logging to show full errors
+logging.basicConfig(level=logging.DEBUG)
+
 app = Flask(__name__)
+app.config['PROPAGATE_EXCEPTIONS'] = True
 
 # Configuration
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-change-this')
@@ -19,7 +24,7 @@ database_url = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
 if database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-# Remove channel_binding and keep only sslmode
+# Remove channel_binding parameter and keep only sslmode
 if database_url.startswith('postgresql://'):
     parsed = urlparse(database_url)
     query_params = {}
@@ -47,7 +52,7 @@ cloudinary.config(
     api_secret=os.environ.get('CLOUDINARY_API_SECRET')
 )
 
-# Ensure upload folder exists (for any local fallback, though we use Cloudinary)
+# Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Models
@@ -240,7 +245,6 @@ def delete_product(product_id):
 
     product = Product.query.get_or_404(product_id)
 
-    # Optional: delete from Cloudinary (not implemented; image remains there)
     Order.query.filter_by(product_id=product.id).delete()
     db.session.delete(product)
     db.session.commit()
