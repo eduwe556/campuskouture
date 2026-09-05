@@ -116,6 +116,14 @@ img {
   background: #d9d9d7;
 }
 
+.hero-images {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
 .hero-image {
   position: absolute;
   inset: 0;
@@ -123,7 +131,12 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  /* No grayscale — full color */
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.hero-image.active {
+  opacity: 1;
 }
 
 .hero-overlay {
@@ -135,6 +148,7 @@ img {
     rgba(0, 0, 0, 0.2) 50%,
     rgba(0, 0, 0, 0.5) 100%
   );
+  z-index: 1;
 }
 
 .hero-content {
@@ -242,6 +256,7 @@ img {
   font-weight: 600;
   letter-spacing: 2px;
   color: #f0f0f0;
+  z-index: 3;
 }
 
 /* ---------- COLLECTION ---------- */
