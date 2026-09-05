@@ -109,4 +109,30 @@ document.addEventListener('DOMContentLoaded', function() {
     nav.style.alignItems = isOpen ? 'flex-start' : '';
   });
 
+  // Hero Slideshow
+  const heroImages = document.querySelectorAll('.hero-image');
+  const heroNumber = document.querySelector('.hero-number');
+  let currentSlide = 0;
+  const totalSlides = heroImages.length;
+
+  function showSlide(index) {
+    heroImages.forEach((img, i) => {
+      img.classList.toggle('active', i === index);
+    });
+    if (heroNumber) {
+      heroNumber.textContent = `0${index + 1} / 0${totalSlides}`;
+    }
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    showSlide(currentSlide);
+  }
+
+  // Auto-advance every 4 seconds
+  setInterval(nextSlide, 4000);
+
+  // Initialize first slide
+  showSlide(0);
+
 });
