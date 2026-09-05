@@ -6,6 +6,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 
+import cloudinary
+import cloudinary.uploader
+
 app = Flask(__name__)
 
 # Configuration
@@ -16,7 +19,7 @@ database_url = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
 if database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-# Remove channel_binding parameter and keep only sslmode
+# Remove channel_binding and keep only sslmode
 if database_url.startswith('postgresql://'):
     parsed = urlparse(database_url)
     query_params = {}
@@ -32,12 +35,19 @@ if database_url.startswith('postgresql://'):
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD', 'campus123')
 
 db = SQLAlchemy(app)
 
-# Ensure upload folder exists
+# Cloudinary configuration
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET')
+)
+
+# Ensure upload folder exists (for any local fallback, though we use Cloudinary)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Models
@@ -48,7 +58,7 @@ class Product(db.Model):
     price = db.Column(db.Float, nullable=False)
     original_price = db.Column(db.Float, nullable=True)
     category = db.Column(db.String(50), nullable=False)
-    image_url = db.Column(db.String(500), nullable=False)   # stores URL or filename
+    image_url = db.Column(db.String(500), nullable=False)   # stores Cloudinary secure URL
     vendor_name = db.Column(db.String(100), nullable=False)
     vendor_whatsapp = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
@@ -71,7 +81,7 @@ class Order(db.Model):
     def __repr__(self):
         return f"Order('{self.customer_name}', '{self.status}')"
 
-# Create tables if they don't exist (runs at startup)
+# Create tables (runs at startup)
 with app.app_context():
     db.create_all()
 
@@ -192,14 +202,13 @@ def add_product():
         flash('No image selected.', 'error')
         return redirect(url_for('admin_dashboard'))
 
-    # Save image locally (for now; we'll move to Cloudinary later)
-    filename = secure_filename(image_file.filename)
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    unique_name = f"{timestamp}_{filename}"
-    image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_name))
-
-    # Store the relative URL path
-    image_url = url_for('static', filename='uploads/' + unique_name)
+    # Upload image to Cloudinary
+    try:
+        upload_result = cloudinary.uploader.upload(image_file)
+        image_url = upload_result['secure_url']
+    except Exception as e:
+        flash(f'Image upload failed: {str(e)}', 'error')
+        return redirect(url_for('admin_dashboard'))
 
     try:
         price_float = float(price)
@@ -231,12 +240,7 @@ def delete_product(product_id):
 
     product = Product.query.get_or_404(product_id)
 
-    # Delete local image file if it exists
-    if product.image_url.startswith('/static/uploads/'):
-        local_path = os.path.join(app.config['UPLOAD_FOLDER'], product.image_url.split('/')[-1])
-        if os.path.exists(local_path):
-            os.remove(local_path)
-
+    # Optional: delete from Cloudinary (not implemented; image remains there)
     Order.query.filter_by(product_id=product.id).delete()
     db.session.delete(product)
     db.session.commit()
