@@ -144,7 +144,7 @@
   {% endwith %}
 
   <div class="product-detail">
-    <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" alt="{{ product.name }}" />
+    <img src="{{ product.image_url }}" alt="{{ product.name }}" />
 
     <div class="details">
       <h1>{{ product.name }}</h1>
