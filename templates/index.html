@@ -132,7 +132,7 @@
               <div class="product-image-wrap">
                 <img
                   class="product-image"
-                  src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
+                  src="{{ product.image_url }}"
                   alt="{{ product.name }}"
                 />
               </div>
