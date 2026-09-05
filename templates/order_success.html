@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation — CampusKouture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Montserrat", sans-serif;
+      background: #f5f5f3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 4px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .card h1 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+    .card p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .card a {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #111;
+      color: white;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Order Placed!</h1>
+    <p>Thank you, {{ order.customer_name }}. Your order (#{{ order.id }}) has been received. We will contact you shortly to confirm payment and delivery.</p>
+    <a href="{{ url_for('home') }}">Continue Shopping</a>
+  </div>
+</body>
+</html>

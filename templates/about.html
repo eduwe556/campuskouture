@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — CampusKouture</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --black: #111111;
+      --muted: #777777;
+      --line: #e5e5e5;
+      --bg: #ffffff;
+      --soft: #f5f5f3;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Montserrat", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    img { display: block; width: 100%; }
+
+    /* Header */
+    .header {
+      width: 100%;
+      padding: 28px 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      color: white;
+    }
+    .logo {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 34px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .nav a { opacity: 0.85; transition: opacity 0.2s; }
+    .nav a:hover { opacity: 1; }
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .header-icons a { font-size: 13px; font-weight: 700; }
+
+    /* Page content */
+    .about-page {
+      padding: 150px 5vw 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about-page h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 900;
+      letter-spacing: -3px;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      line-height: 1;
+    }
+    .about-page h1 span { color: transparent; -webkit-text-stroke: 1.5px #222; }
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      margin-bottom: 50px;
+    }
+    .about-text {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #555;
+    }
+    .about-text h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #111;
+    }
+    .about-text p { margin-bottom: 20px; }
+    .contact-box {
+      background: var(--soft);
+      padding: 30px;
+      border-radius: 4px;
+      align-self: start;
+    }
+    .contact-box h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+    .contact-box p {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .contact-box a {
+      font-weight: 600;
+      color: #111;
+      border-bottom: 1px solid #111;
+      padding-bottom: 2px;
+    }
+    .contact-box a:hover { opacity: 0.7; }
+
+    /* Footer */
+    .footer {
+      background: #111;
+      color: white;
+      padding: 60px 5vw;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .footer-logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .footer p {
+      margin-top: 15px;
+      color: #aaa;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 28px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .about-content { grid-template-columns: 1fr; gap: 30px; }
+      .about-page { padding: 120px 6vw 60px; }
+      .nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <a href="{{ url_for('home') }}" class="logo">CAMPUSKOUTURE</a>
+    <nav class="nav">
+      <a href="{{ url_for('home') }}#collection">Shop</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="header-icons">
+      <a href="#" aria-label="Search">⌕</a>
+      <a href="#" aria-label="Shopping bag">□</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="about-page">
+    <h1>About <span>CampusKouture</span></h1>
+
+    <div class="about-content">
+      <div class="about-text">
+        <h2>Our Mission</h2>
+        <p>CampusKouture is a fashion marketplace created specifically for university students in Nigeria. We bring together trusted local vendors onto one platform so you can discover affordable, stylish clothing without spending hours moving from market to market.</p>
+        <p>We believe that looking good shouldn't be stressful or expensive. By connecting you with curated campus vendors, we make it easier to find outfits that fit your budget and your style.</p>
+        <h2>How It Works</h2>
+        <p>1. Browse our collection of clothes, shoes, bags, and accessories from multiple vendors.</p>
+        <p>2. Click on any product to see details and place an order using the simple form.</p>
+        <p>3. We contact you to confirm payment and delivery. Then your order is prepared by the vendor and delivered to you on campus.</p>
+      </div>
+
+      <div class="contact-box" id="contact">
+        <h3>Contact Us</h3>
+        <p>Have questions or want to become a vendor? Reach out to us.</p>
+        <p><strong>WhatsApp:</strong> <a href="https://wa.me/2349016530108" target="_blank">+234 901 653 0108</a></p>
+        <p><strong>Email:</strong> <a href="mailto:taliatibrahim457@gmail.com">taliatibrahim457@gmail.com</a></p>
+        <p><strong>Instagram:</strong> <a href="#" target="_blank">@campuskouture</a></p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-logo">CAMPUSKOUTURE</div>
+    <p>Fashion discovery, made easier for students.</p>
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+      <a href="{{ url_for('about') }}#contact">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

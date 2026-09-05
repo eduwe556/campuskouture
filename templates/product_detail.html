@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ product.name }} — CampusKouture</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Montserrat", sans-serif;
+      background: #fff;
+      color: #111;
+      padding: 40px 5vw;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .back-link {
+      font-size: 12px;
+      color: #888;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 30px;
+      display: inline-block;
+    }
+    .back-link:hover { color: #111; }
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: start;
+    }
+    .product-detail img {
+      width: 100%;
+      aspect-ratio: 0.8;
+      object-fit: cover;
+      filter: grayscale(100%);
+      background: #f5f5f3;
+    }
+    .details h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .details .category {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+    .details .description {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .details .price {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .details .price del {
+      color: #aaa;
+      font-weight: 400;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    .order-form {
+      background: #f9f9f9;
+      padding: 25px;
+      border-radius: 4px;
+    }
+    .order-form h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .order-form label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #555;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .order-form input,
+    .order-form select {
+      width: 100%;
+      padding: 11px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      font: inherit;
+      font-size: 13px;
+    }
+    .order-form button {
+      width: 100%;
+      padding: 13px;
+      background: #111;
+      color: white;
+      border: none;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .order-form button:hover { background: #333; }
+    .flash {
+      font-size: 13px;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #f0f0f0;
+      border-left: 3px solid #111;
+    }
+    .flash.success { border-left-color: green; }
+    .flash.error { border-left-color: red; }
+    @media (max-width: 768px) {
+      .product-detail { grid-template-columns: 1fr; gap: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="{{ url_for('home') }}">← Back to collection</a>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="product-detail">
+    <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" alt="{{ product.name }}" />
+
+    <div class="details">
+      <h1>{{ product.name }}</h1>
+      <p class="category">{{ product.category }}</p>
+
+      {% if product.description %}
+      <p class="description">{{ product.description }}</p>
+      {% endif %}
+
+      <p class="price">
+        {% if product.original_price %}
+        <del>₦{{ '{:,.0f}'.format(product.original_price) }}</del> ₦{{ '{:,.0f}'.format(product.price) }}
+        {% else %}
+        ₦{{ '{:,.0f}'.format(product.price) }}
+        {% endif %}
+      </p>
+
+      <div class="order-form">
+        <h2>Order Now</h2>
+        <form method="POST" action="{{ url_for('place_order', product_id=product.id) }}">
+          <label>Full Name *</label>
+          <input type="text" name="customer_name" required />
+
+          <label>Phone Number *</label>
+          <input type="tel" name="customer_phone" required />
+
+          <label>Delivery Address / Campus Location *</label>
+          <input type="text" name="customer_address" required />
+
+          <label>Size (if applicable)</label>
+          <input type="text" name="size" placeholder="e.g., M, L, 42, etc." />
+
+          <label>Quantity</label>
+          <input type="number" name="quantity" value="1" min="1" />
+
+          <button type="submit">Place Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

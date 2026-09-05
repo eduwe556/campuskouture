@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CampusKouture — Fashion Store</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    /* Search bar styles */
+    .search-bar {
+      display: none;
+      padding: 15px 5vw;
+      background: white;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .search-bar input {
+      width: 100%;
+      max-width: 500px;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      font: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-bar input:focus {
+      border-color: #111;
+    }
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="{{ url_for('home') }}" class="logo">CAMPUSKOUTURE</a>
+
+    <nav class="nav">
+      <a href="{{ url_for('home') }}#collection">Shop</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('about') }}#contact">Contact</a>
+    </nav>
+
+    <div class="header-icons">
+      <a href="#" id="search-toggle" aria-label="Search">⌕</a>
+      <a href="#" aria-label="Shopping bag">□</a>
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <!-- SEARCH BAR -->
+ <!-- SEARCH BAR -->
+<div class="search-bar" id="search-bar">
+  <form id="search-form" style="width: 100%; max-width: 500px; position: relative;">
+    <input type="text" id="search-input" placeholder="Search for clothes, shoes, bags..." />
+    <button type="button" id="search-close" aria-label="Close search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: #888;">✕</button>
+  </form>
+</div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img
+      class="hero-image"
+      src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1800&q=85"
+      alt="Fashion model wearing a stylish outfit"
+    />
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <p class="hero-small-text">For modern wardrobes</p>
+
+      <h1 class="hero-title">
+        Addicted
+        <span class="outline">To</span>
+        Fashion.
+      </h1>
+
+      <p class="hero-subtitle">
+        Discover carefully selected fashion pieces
+        from independent vendors around your campus.
+      </p>
+
+      <a href="{{ url_for('home') }}#collection" class="shop-btn">
+        Shop now <span>→</span>
+      </a>
+    </div>
+
+    <div class="hero-scroll">Scroll</div>
+    <div class="hero-number">01 / 04</div>
+  </section>
+
+  <!-- COLLECTION -->
+  <main id="collection" class="collection">
+
+    <div class="collection-header">
+      <p class="section-label">New collection</p>
+
+      <h2 class="section-title">Spring is around the corner</h2>
+
+      <div class="category-nav">
+        <button class="category-btn active" data-category="all">Clothing</button>
+        <button class="category-btn" data-category="bags">Bags</button>
+        <button class="category-btn" data-category="shoes">Shoes</button>
+        <button class="category-btn" data-category="accessories">Accessories</button>
+      </div>
+    </div>
+
+    <div class="products-wrapper">
+      <button class="product-arrow left" aria-label="Previous products">←</button>
+
+      <div class="products">
+        {% if products %}
+          {% for product in products %}
+          <article class="product" data-category="{{ product.category|lower }}" data-name="{{ product.name|lower }}" data-description="{{ (product.description or '')|lower }}">
+            <a href="{{ url_for('product_detail', product_id=product.id) }}" style="display: block; text-decoration: none; color: inherit;">
+              <div class="product-image-wrap">
+                <img
+                  class="product-image"
+                  src="{{ url_for('static', filename='uploads/' + product.image_filename) }}"
+                  alt="{{ product.name }}"
+                />
+              </div>
+
+              <div class="product-info">
+                <h3 class="product-name">{{ product.name }}</h3>
+                <p class="product-description">{{ product.description or 'Curated for you' }}</p>
+                <p class="product-price">
+                  {% if product.original_price %}
+                  <del>₦{{ '{:,.0f}'.format(product.original_price) }}</del> ₦{{ '{:,.0f}'.format(product.price) }}
+                  {% else %}
+                  ₦{{ '{:,.0f}'.format(product.price) }}
+                  {% endif %}
+                </p>
+              </div>
+            </a>
+          </article>
+          {% endfor %}
+        {% else %}
+          <div class="no-results" style="display: block;">No products available yet. Check back soon!</div>
+        {% endif %}
+        <div class="no-results" id="no-results">No products match your search.</div>
+      </div>
+
+      <button class="product-arrow right" aria-label="Next products">→</button>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="about">
+    <div class="footer-logo">CAMPUSKOUTURE</div>
+    <p>Fashion discovery, made easier for students.</p>
+
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">WhatsApp</a>
+      <a href="{{ url_for('about') }}#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
