@@ -1,7 +1,42 @@
-// Wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', function() {
+// Wait for the DOM to load
+document.addEventListener('DOMContentLoaded', function () {
 
-  // Elements
+  // ============================================================
+  // HERO SLIDESHOW
+  // ============================================================
+  const heroImages = document.querySelectorAll('.hero-image');
+  const heroNumber = document.querySelector('.hero-number');
+  let currentSlide = 0;
+  const totalSlides = heroImages.length;
+
+  if (totalSlides > 0) {
+    function showSlide(index) {
+      heroImages.forEach(function (img, i) {
+        if (i === index) {
+          img.classList.add('active');
+        } else {
+          img.classList.remove('active');
+        }
+      });
+      if (heroNumber) {
+        var current = String(index + 1).padStart(2, '0');
+        var total = String(totalSlides).padStart(2, '0');
+        heroNumber.textContent = current + ' / ' + total;
+      }
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    }
+
+    showSlide(0);
+    setInterval(nextSlide, 4000);
+  }
+
+  // ============================================================
+  // SEARCH BAR
+  // ============================================================
   const searchToggle = document.getElementById('search-toggle');
   const searchBar = document.getElementById('search-bar');
   const searchInput = document.getElementById('search-input');
@@ -11,13 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const categoryButtons = document.querySelectorAll('.category-btn');
   const products = document.querySelectorAll('.product');
 
-  // Function to filter products based on search and category
   function filterProducts() {
+    if (!searchInput) return;
     const query = searchInput.value.toLowerCase().trim();
-    const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
+    const activeBtn = document.querySelector('.category-btn.active');
+    const activeCategory = activeBtn ? activeBtn.dataset.category : 'all';
     let visibleCount = 0;
 
-    products.forEach(product => {
+    products.forEach(function (product) {
       const name = product.dataset.name || '';
       const description = product.dataset.description || '';
       const matchesSearch = name.includes(query) || description.includes(query);
@@ -36,103 +72,88 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Open search bar
   function openSearch() {
-    searchBar.classList.add('open');
-    searchBar.style.display = 'block';
-    searchInput.focus();
+    if (searchBar) {
+      searchBar.style.display = 'block';
+      if (searchInput) searchInput.focus();
+    }
   }
 
-  // Close search bar
   function closeSearch() {
-    searchBar.classList.remove('open');
-    searchBar.style.display = 'none';
-    searchInput.value = '';
-    filterProducts(); // Show all products again
+    if (searchBar) {
+      searchBar.style.display = 'none';
+      if (searchInput) searchInput.value = '';
+      filterProducts();
+    }
   }
 
-  // Toggle search bar on icon click
-  searchToggle.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (searchBar.classList.contains('open')) {
+  if (searchToggle) {
+    searchToggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (searchBar.style.display === 'block') {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+    });
+  }
+
+  if (searchClose) {
+    searchClose.addEventListener('click', function () {
       closeSearch();
-    } else {
-      openSearch();
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', filterProducts);
+  }
+
+  if (searchForm) {
+    searchForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      filterProducts();
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && searchBar && searchBar.style.display === 'block') {
+      closeSearch();
     }
   });
 
-  // Close search bar on close button click
-  searchClose.addEventListener('click', function() {
-    closeSearch();
-  });
-
-  // Close search bar on Escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && searchBar.classList.contains('open')) {
-      closeSearch();
-    }
-  });
-
-  // Search input event
-  searchInput.addEventListener('input', filterProducts);
-
-  // Prevent form submission (Enter key)
-  searchForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    filterProducts();
-  });
-
-  // Category filter
-  categoryButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      categoryButtons.forEach(btn => btn.classList.remove('active'));
+  // ============================================================
+  // CATEGORY FILTER
+  // ============================================================
+  categoryButtons.forEach(function (button) {
+    button.addEventListener('click', function () {
+      categoryButtons.forEach(function (btn) {
+        btn.classList.remove('active');
+      });
       this.classList.add('active');
-      searchInput.value = '';
+      if (searchInput) searchInput.value = '';
       filterProducts();
     });
   });
 
-  // Mobile menu
+  // ============================================================
+  // MOBILE MENU
+  // ============================================================
   const menuBtn = document.querySelector('.menu-btn');
   const nav = document.querySelector('.nav');
 
-  menuBtn.addEventListener('click', function() {
-    const isOpen = nav.classList.toggle('mobile-open');
-    nav.style.display = isOpen ? 'flex' : '';
-    nav.style.position = isOpen ? 'absolute' : '';
-    nav.style.top = isOpen ? '70px' : '';
-    nav.style.left = isOpen ? '0' : '';
-    nav.style.right = isOpen ? '0' : '';
-    nav.style.background = isOpen ? '#111' : '';
-    nav.style.padding = isOpen ? '25px' : '';
-    nav.style.flexDirection = isOpen ? 'column' : '';
-    nav.style.alignItems = isOpen ? 'flex-start' : '';
-  });
-
-  // Hero Slideshow
-  const heroImages = document.querySelectorAll('.hero-image');
-  const heroNumber = document.querySelector('.hero-number');
-  let currentSlide = 0;
-  const totalSlides = heroImages.length;
-
-  function showSlide(index) {
-    heroImages.forEach((img, i) => {
-      img.classList.toggle('active', i === index);
+  if (menuBtn && nav) {
+    menuBtn.addEventListener('click', function () {
+      const isOpen = nav.classList.toggle('mobile-open');
+      nav.style.display = isOpen ? 'flex' : '';
+      nav.style.position = isOpen ? 'absolute' : '';
+      nav.style.top = isOpen ? '70px' : '';
+      nav.style.left = isOpen ? '0' : '';
+      nav.style.right = isOpen ? '0' : '';
+      nav.style.background = isOpen ? '#111' : '';
+      nav.style.padding = isOpen ? '25px' : '';
+      nav.style.flexDirection = isOpen ? 'column' : '';
+      nav.style.alignItems = isOpen ? 'flex-start' : '';
     });
-    if (heroNumber) {
-      heroNumber.textContent = `0${index + 1} / 0${totalSlides}`;
-    }
   }
-
-  function nextSlide() {
-    currentSlide = (currentSlide + 1) % totalSlides;
-    showSlide(currentSlide);
-  }
-
-  // Auto-advance every 4 seconds
-  setInterval(nextSlide, 4000);
-
-  // Initialize first slide
-  showSlide(0);
 
 });

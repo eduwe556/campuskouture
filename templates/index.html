@@ -54,12 +54,22 @@
     <nav class="nav">
       <a href="{{ url_for('home') }}#collection">Shop</a>
       <a href="{{ url_for('about') }}">About</a>
-      <a href="{{ url_for('about') }}#contact">Contact</a>
+      {% if current_user %}
+        {% if current_user.role == 'vendor' %}
+          <a href="{{ url_for('vendor_dashboard') }}">Seller Dashboard</a>
+        {% else %}
+          <a href="{{ url_for('my_orders') }}">My Orders</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Sign Up</a>
+      {% endif %}
     </nav>
 
     <div class="header-icons">
       <a href="#" id="search-toggle" aria-label="Search">⌕</a>
-      <a href="#" aria-label="Shopping bag">□</a>
+      <a href="{% if current_user and current_user.role == 'buyer' %}{{ url_for('my_orders') }}{% elif current_user and current_user.role == 'vendor' %}{{ url_for('vendor_dashboard') }}{% else %}{{ url_for('login') }}{% endif %}" aria-label="Messages">💬</a>
       <button class="menu-btn" aria-label="Open menu">☰</button>
     </div>
   </header>
@@ -77,7 +87,7 @@
     <div class="hero-images">
       <img class="hero-image active" src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=1800&q=85" alt="African corporate man in suit" />
       <img class="hero-image" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1800&q=85" alt="African businessman walking" />
-      <img class="hero-image" src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=1800&q=85" alt="African man in corporate studio" />
+      <img class="hero-image" src="https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=1800&q=85" alt="Fashion accessories flat lay" />
     </div>
 
     <div class="hero-overlay"></div>
@@ -100,8 +110,6 @@
         Shop now <span>→</span>
       </a>
     </div>
-
-    <div class="hero-scroll">Scroll</div>
     <div class="hero-number">01 / 03</div>
   </section>
 
@@ -172,6 +180,9 @@
       <a href="{{ url_for('about') }}#contact">Contact</a>
     </div>
   </footer>
+
+  <!-- Floating chat button -->
+  <a href="{% if current_user and current_user.role == 'buyer' %}{{ url_for('my_orders') }}{% elif current_user and current_user.role == 'vendor' %}{{ url_for('vendor_dashboard') }}{% else %}{{ url_for('login') }}{% endif %}" class="chat-float" aria-label="Messages">💬</a>
 
   <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>

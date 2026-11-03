@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Chat — CampusKouture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Montserrat", sans-serif; background: #f5f5f3; color: #111;
+      padding: 30px 5vw; min-height: 100vh; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    .back { font-size: 12px; color: #888; text-decoration: none; font-weight: 600; display: inline-block; margin-bottom: 20px; }
+    .back:hover { color: #111; }
+    .order-head { background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;
+      display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+    .order-head img { width: 60px; height: 75px; object-fit: cover; border-radius: 2px; background: #f5f5f3; }
+    .order-head .info h2 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .order-head .info p { font-size: 11px; color: #666; }
+    .thread { background: white; padding: 20px; border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+    .msg { margin-bottom: 15px; display: flex; flex-direction: column; }
+    .msg.mine { align-items: flex-end; }
+    .bubble { max-width: 75%; padding: 10px 14px; border-radius: 12px;
+      font-size: 13px; line-height: 1.5; background: #f0f0f0; }
+    .msg.mine .bubble { background: #111; color: white; }
+    .meta { font-size: 10px; color: #999; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .empty-chat { text-align: center; padding: 30px 20px; font-size: 12px; color: #999; }
+    .compose { display: flex; gap: 8px; margin-top: 15px; }
+    .compose input { flex: 1; padding: 12px 14px; border: 1px solid #ddd; border-radius: 4px;
+      font: inherit; font-size: 13px; }
+    .compose button { padding: 12px 20px; background: #111; color: white; border: none;
+      font: inherit; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; border-radius: 4px; cursor: pointer; }
+    .compose button:hover { background: #333; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    {% if current_user and current_user.role == 'vendor' %}
+      <a class="back" href="{{ url_for('vendor_dashboard') }}">← Back to dashboard</a>
+    {% else %}
+      <a class="back" href="{{ url_for('my_orders') }}">← Back to orders</a>
+    {% endif %}
+
+    <div class="order-head">
+      <img src="{{ order.product.image_url }}" alt="{{ order.product.name }}" />
+      <div class="info">
+        <h2>{{ order.product.name }}</h2>
+        <p>Order #{{ order.id }} · {{ order.status }} · Qty {{ order.quantity }}{% if order.size %} · Size {{ order.size }}{% endif %}</p>
+        <p>Customer: {{ order.customer_name }}</p>
+      </div>
+    </div>
+
+    <div class="thread">
+      {% if order.messages %}
+        {% for m in order.messages %}
+          <div class="msg {{ 'mine' if current_user and m.sender_id == current_user.id else '' }}">
+            <div class="bubble">{{ m.body }}</div>
+            <div class="meta">{{ m.sender.name if m.sender else 'User' }} · {{ m.created_at.strftime('%d %b %H:%M') }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-chat">No messages yet. Send the first one below.</div>
+      {% endif %}
+
+      <form class="compose" method="POST">
+        <input type="text" name="body" placeholder="Type a message..." required autocomplete="off" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

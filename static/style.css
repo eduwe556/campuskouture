@@ -225,29 +225,6 @@ img {
   line-height: 0;
 }
 
-.hero-scroll {
-  position: absolute;
-  bottom: 34px;
-  left: 5vw;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  color: #fff;
-}
-
-.hero-scroll::before {
-  content: "";
-  width: 1px;
-  height: 60px;
-  background: #fff;
-}
-
 .hero-number {
   position: absolute;
   bottom: 35px;
@@ -474,6 +451,31 @@ img {
   text-transform: uppercase;
 }
 
+/* ---------- FLOATING CHAT BUTTON ---------- */
+
+.chat-float {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  width: 56px;
+  height: 56px;
+  background: #111;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  transition: transform 0.2s;
+}
+
+.chat-float:hover {
+  transform: scale(1.08);
+}
+
 /* ---------- RESPONSIVE ---------- */
 
 @media (max-width: 1100px) {
@@ -546,11 +548,6 @@ img {
     max-width: 250px;
   }
 
-  .hero-scroll {
-    left: 6vw;
-    bottom: 25px;
-  }
-
   .hero-number {
     right: 6vw;
     bottom: 25px;
@@ -603,6 +600,14 @@ img {
 
   .product-price {
     font-size: 11px;
+  }
+
+  .chat-float {
+    bottom: 18px;
+    right: 18px;
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
   }
 }
 

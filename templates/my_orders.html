@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Orders — CampusKouture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Montserrat", sans-serif; background: #fff; color: #111;
+      padding: 40px 5vw; max-width: 1000px; margin: 0 auto; }
+    .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .top h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+    .back { font-size: 12px; color: #888; text-decoration: none; font-weight: 600; }
+    .back:hover { color: #111; }
+    .order-card { border: 1px solid #eee; border-radius: 4px; padding: 20px;
+      margin-bottom: 15px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .order-card img { width: 80px; height: 100px; object-fit: cover; border-radius: 2px; background: #f5f5f3; }
+    .order-info { flex: 1; min-width: 200px; }
+    .order-info h3 { font-size: 14px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
+    .order-info p { font-size: 12px; color: #666; margin-bottom: 3px; }
+    .order-info .chat-link { display: inline-block; margin-top: 8px; font-size: 11px;
+      font-weight: 700; color: #111; text-decoration: none;
+      border: 1px solid #111; padding: 6px 12px; border-radius: 2px; }
+    .order-info .chat-link:hover { background: #111; color: white; }
+    .status { font-size: 10px; font-weight: 700; padding: 5px 10px;
+      border-radius: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .status-Pending { background: #fff3cd; color: #856404; }
+    .status-Paid { background: #d1ecf1; color: #0c5460; }
+    .status-Completed { background: #d4edda; color: #155724; }
+    .empty { text-align: center; padding: 60px 20px; color: #888; font-size: 14px; }
+    .empty a { color: #111; font-weight: 700; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1>My Orders</h1>
+    <a class="back" href="{{ url_for('home') }}">← Back to shop</a>
+  </div>
+
+  {% if orders %}
+    {% for order in orders %}
+    <div class="order-card">
+      <img src="{{ order.product.image_url }}" alt="{{ order.product.name }}" />
+      <div class="order-info">
+        <h3>{{ order.product.name }}</h3>
+        <p>Order #{{ order.id }} · ₦{{ '{:,.0f}'.format(order.product.price * order.quantity) }}</p>
+        <p>Qty: {{ order.quantity }}{% if order.size %} · Size: {{ order.size }}{% endif %}</p>
+        <p>Placed: {{ order.created_at.strftime('%d %b %Y') }}</p>
+        <a class="chat-link" href="{{ url_for('order_messages', order_id=order.id) }}">💬 Chat about this order</a>
+      </div>
+      <span class="status status-{{ order.status }}">{{ order.status }}</span>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      You haven't placed any orders yet.<br /><br />
+      <a href="{{ url_for('home') }}#collection">Start shopping →</a>
+    </div>
+  {% endif %}
+</body>
+</html>
